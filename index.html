@@ -1,0 +1,301 @@
+
+<!doctype html>
+<html>
+
+<head>
+	<title>Medals by Country in the Past Five Winter Olympics</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+	<script src="script.js"></script>
+	<style>
+		
+		*{
+			padding: 0;
+			margin: 0;
+			font-family: arial;
+		}
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		/* background: rgba(255, 255, 255, 0.5); */
+        padding-bottom: 195px;
+
+		
+	}
+	#container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+		margin: auto;
+		width: 50%;
+		height: 100vh;
+	}
+        #labels {
+            display: flex;
+            padding-bottom: 15px;
+        }
+	img {
+		height: 10rem;
+		width: auto;
+		position: absolute;
+		margin: auto;
+		left: 0;
+		right: 75%;
+		top: 20px;
+	}
+	button {
+		width: 65px;
+		height: 35px;
+		border: 1px solid black;
+	}
+	@media screen and (max-width: 960px){
+		#container {
+			width: 100%;
+		}
+	}
+	body {
+		background: url("slope without pedestal.png");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		height: 100vh;
+		width: 100%;
+	}
+	.legendWrapper{
+		display: block;
+        clear: both;
+		font-weight: bold;
+		margin-bottom: 10px;
+	}
+        .buttongroup {
+           align-content: center;
+        }
+	.label1{
+		margin-right:10px;
+	}
+	.legend1{
+		background: rgb(207,181,59);
+		width: 50px;
+		height: 20px;
+		margin-right: 10px;
+	}
+	.label2{
+		margin-right:10px;
+	}
+	.legend2{
+		background: silver;
+		width: 50px;
+		height: 20px;
+		margin-right: 10px;
+	}
+	.label3{
+		margin-right:10px;
+	}
+	.legend3{
+		background: rgb(144,89,35);
+		width: 50px;
+		height: 20px;
+		margin-right: 10px;
+	}
+	</style>
+</head>
+
+<body>
+	<img src="olympic rings transparent.png" alt="">
+
+	<div id="container">
+			<div class="legendWrapper">
+                <div id="labels">
+                    <div class="label1" > Top 5</div>
+					<div class="legend1"></div>
+					<div class="label2" > Next 5</div>
+					<div class="legend2"></div>
+					<div class="label3" >Last 5</div>
+					<div class="legend3"></div>
+                </div>
+                <div class="buttongroup">
+                    <button id="showData2002">2002</button>
+			        <button id="showData2006">2006</button>
+				    <button id="showData2010">2010</button>
+				    <button id="showData2014">2014</button>
+                    <button id="showData2018">2018</button>
+		        </div>
+            </div>
+		<canvas id="canvas"></canvas>
+	</div>
+
+
+	
+	<script>
+		var countries2002 = ['Russia', 'Italy', 'France', 'Switzerland', 'China', 'Germany', 'United States', 'Norway', 'Canada', 'Austria', 'Netherlands', 'Finland', 'Sweden', 'Croatia', 'Estonia'];
+		var countries2006 = ['Austria', 'Sweden', 'Switzerland', 'France', 'Italy', 'Germany', 'Russia', 'United States', 'Norway', 'Canada', 'China', 'South Korea', 'Finland', 'Netherlands', 'Czech Republic'];
+		var countries2010 = ['Austria', 'Sweden', 'France', 'Switzerland', 'South Korea', 'United States', 'Germany', 'Norway', 'Canada', 'Russia', 'Netherlands', 'Czech Republic', 'Poland', 'Finland', 'Japan'];		
+		var countries2014 = ['Austria', 'France', 'Sweden', 'Netherlands', 'Switzerland', 'Russia', 'United States', 'Norway', 'Canada', 'Germany', 'China', 'Slovenia', 'Italy', 'Czech Republic', 'Japan'];
+		var countries2018 = ['South Korea', 'Olympic Athletes from Russia', 'Austria', 'Switzerland', 'France', 'Norway', 'Germany', 'Canada', 'United States', 'Netherlands', 'Sweden', 'Japan', 'Italy', 'China', 'Czech Republic'];		
+		var color = Chart.helpers.color;
+		var barChartData = {
+			labels: [],
+			datasets: [{
+				label: '',
+				backgroundColor: ['rgba(129,129,129,0.8)', 'rgba(129,129,129,0.8)', 'rgba(129,129,129,0.8)', 'rgba(129,129,129,0.8)', 'rgba(129,129,129,0.8)', 'rgba(207,181,59, 0.8)', 'rgba(207,181,59, 0.8)', 'rgba(207,181,59, 0.8)', 'rgba(207,181,59, 0.8)', 'rgba(207,181,59, 0.8)', 'rgba(144,89,35, 0.8)', 'rgba(144,89,35, 0.8)', 'rgba(144,89,35, 0.8)', 'rgba(144,89,35, 0.8)', 'rgba(144,89,35, 0.8)' ],
+				borderColor: 'rgba(0,0,0,1)',
+				borderWidth: 1,
+				data: [ 
+				]
+			 }
+			]
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myBar = new Chart(ctx, {
+				type: 'bar',
+				data: barChartData,
+				options: {
+					responsive: true,
+					legend: {
+						display:false,
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: 'Medals by Country in the Past Five Winter Olympics',
+						fontSize: 25,
+						padding: 0
+					},
+					scales: {
+						xAxes: [{
+							stacked: false,
+							barThickness: 38,
+							barPercentage:1.0,
+							gridLines: {
+								display:false
+							},
+							ticks: {
+								display: false,
+								beginAtZero: true,
+								min: 0
+							}
+						}],
+						yAxes: [{
+							stacked: false,
+							barPercentage:1,
+							categoryPercentage:1,
+							gridLines: {
+								display:false
+							},
+							ticks: {
+								display: false,
+								beginAtZero: true,
+								min: 0
+							}
+						}]
+					}
+
+				},
+
+				
+			});
+
+
+		};
+		document.querySelector("#showData2002").addEventListener("click", function(){
+				barChartData.datasets[0].label = "2002";
+                barChartData.labels = countries2002;
+                barChartData.datasets[0].data = [];
+				barChartData.datasets[0].data.push("15", "12", "12", "11", "8", "36", "34", "26", "18", "17", "8", "7", "6", "5", "4");
+				myBar.update();
+			})
+		document.querySelector("#showData2006").addEventListener("click", function(){
+				barChartData.datasets[0].label = "2006";
+                barChartData.labels = countries2006;
+                barChartData.datasets[0].data = [];
+				barChartData.datasets[0].data.push("23", "17", "13", "13", "11", "40", "27", "26", "25", "24", "11", "11", "9", "9", "4");
+				myBar.update();
+			})
+		document.querySelector("#showData2010").addEventListener("click", function(){
+				barChartData.datasets[0].label = "2010";
+                barChartData.labels = countries2010;
+                barChartData.datasets[0].data = []
+				barChartData.datasets[0].data.push("15", "11", "9", "8", "7", "31", "29", "24", "18", "16", "7", "6", "6", "5", "5");
+				myBar.update();
+			})
+		document.querySelector("#showData2014").addEventListener("click", function(){
+				barChartData.datasets[0].label = "2014";
+                barChartData.labels = countries2014;
+                barChartData.datasets[0].data = []
+				barChartData.datasets[0].data = ["17", "16", "15", "13", "12", "30", "27", "25", "23", "20", "10", "8", "8", "8", "8"];
+				myBar.update();
+			})
+		document.querySelector("#showData2018").addEventListener("click", function(){
+				barChartData.datasets[0].label = "2018";
+                barChartData.labels = countries2018;
+                barChartData.datasets[0].data = []
+				barChartData.datasets[0].data = ["18", "17", "16", "16", "15", "37", "31", "29", "23", "20", "14", "13", "10", "9", "7"];
+				myBar.update();
+			})
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			var zero = Math.random() < 0.2 ? true : false;
+			barChartData.datasets.forEach(function(dataset) {
+				dataset.data = dataset.data.map(function() {
+					return zero ? 0.0 : Math.abs(randomScalingFactor());
+				});
+
+			});
+			window.myBar.update();
+		});
+
+		var colorNames = Object.keys(window.chartColors);
+		document.getElementById('addDataset').addEventListener('click', function() {
+			var colorName = colorNames[barChartData.datasets.length % colorNames.length];
+			var dsColor = window.chartColors[colorName];
+			var newDataset = {
+				label: 'Dataset ' + barChartData.datasets.length,
+				backgroundColor: color(dsColor).alpha(0.5).rgbString(),
+				borderColor: dsColor,
+				borderWidth: 1,
+				data: []
+			};
+
+			for (var index = 0; index < barChartData.labels.length; ++index) {
+				newDataset.data.push(randomScalingFactor());
+			}
+
+			barChartData.datasets.push(newDataset);
+			window.myBar.update();
+		});
+
+		document.getElementById('addData').addEventListener('click', function() {
+			if (barChartData.datasets.length > 0) {
+				var month = MONTHS[barChartData.labels.length % MONTHS.length];
+				barChartData.labels.push(month);
+
+				for (var index = 0; index < barChartData.datasets.length; ++index) {
+					// window.myBar.addData(randomScalingFactor(), index);
+					barChartData.datasets[index].data.push(randomScalingFactor());
+				}
+
+				window.myBar.update();
+			}
+		});
+
+		document.getElementById('removeDataset').addEventListener('click', function() {
+			barChartData.datasets.splice(0, 1);
+			window.myBar.update();
+		});
+
+		document.getElementById('removeData').addEventListener('click', function() {
+			barChartData.labels.splice(-1, 1); // remove the label first
+
+			barChartData.datasets.forEach(function(dataset) {
+				dataset.data.pop();
+			});
+
+			window.myBar.update();
+		});
+	</script>
+</body>
+
+</html>
